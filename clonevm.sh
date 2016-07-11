@@ -80,18 +80,19 @@ else
                         #update disk defintions
                         echo "Updating Disks"
                         for disk in `ls *.vmdk | grep -v "flat.vmdk" -`; do
-                                sed -i -e "s/${TEMPLATE}/${TARGET}/g" $f
+                                sed -i -e "s/${TEMPLATE}/${TARGET}/g" -f $f
                         done
 
                         echo "Configuring VMX"
-                        sed -i -e "s/${TEMPLATE}/${TARGET}/g" ${TARGET}.vmx
+                        sed -i -e "s/${TEMPLATE}/${TARGET}/g" -f ${TARGET}.vmx
 
                         echo "Registering new VM with ESXi"
-                        vim-cmd solo/registervm $TARGET $TARGETDIR/$TARGET.vmx
+                         VMID=`vim-cmd solo/registervm $TARGETDIR/$TARGET.vmx`
 
-                        echo Done
+                        echo "New VM $TARGET was registered with id $VMID"
+
                 else
-                        echo "Could not find templates, try $0 list"
+                        echo "Could not find template, try $0 list"
                 fi
 
         fi
